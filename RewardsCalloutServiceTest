@@ -1,0 +1,25 @@
+@isTest
+private class RewardsCalloutServiceTest {   
+    @testSetup static void setupTestData(){
+        List<Wellness_Journey__c> listToInsert=new List<Wellness_Journey__c>();
+        Date currentDay=Date.today();
+        Date previousDate=currentDay.addDays(-100);
+        Integer previousYear=previousDate.year()==currentDay.year()? currentDay.year() : previousDate.year();
+        Integer previousMonth=previousDate.month();
+        Integer previousDay=previousDate.day();
+            
+        Date completionDate=Date.newInstance(previousYear, previousMonth, previousDay);
+        for(Integer i=1;i<=12;i++){
+            listToInsert.add(new Wellness_Journey__c(Name='Test '+i, Status__c='Complete', Completion_Date__c=completionDate, OwnerId=UserInfo.getUserId()));
+        }
+        insert listToInsert;
+    }
+    
+    @isTest static void testSubmitUsersForRewardCallout_Success(){
+        Test.setMock(HttpCalloutMock.class, new RewardsCalloutServiceMock());
+		List<Wellness_Journey__c> journeys=[SELECT Id, Name, Status__c,Completion_Date__c,OwnerId FROM Wellness_Journey__c];        
+        Test.startTest();
+        Database.executeBatch(new WellnessJourneyRewardsBatch());        
+        Test.stopTest(); 
+    }
+}
