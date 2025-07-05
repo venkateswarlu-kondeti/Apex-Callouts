@@ -1,0 +1,13 @@
+@isTest
+global class RewardsCalloutServiceMock implements HttpCalloutMock {
+    global HTTPResponse respond(HTTPRequest req){
+        System.assertEquals('callout:IntegrationSB__BalancedLiving/rewards', req.getEndpoint());
+        System.assertEquals('POST', req.getMethod());
+        String contentType=req.getHeader('Content-Type');
+        System.assertEquals('application/json', contentType);
+        
+        HttpResponse res=new HttpResponse();
+        res.setStatusCode(200);
+        return res;
+    }
+}
