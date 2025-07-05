@@ -1,0 +1,13 @@
+@isTest
+private class BillingCalloutServiceTest {
+    @isTest static void testAccessibilityProjectBilling(){
+        Test.setMock(WebServiceMock.class, new BillingCalloutServiceMock());
+        
+        Workshop__c w = new Workshop__c(Name = 'Gym for fitness', Description__c = 'Learn to go Gym daily', DHH_Accessible__c = true);
+        Test.startTest();
+        insert w;    
+        Test.stopTest();
+        Accessibility_Project__c ap =[SELECT Id,Status__c FROM Accessibility_Project__c LIMIT 1];
+        System.assertEquals('Complete',ap.Status__c);
+    }
+}
